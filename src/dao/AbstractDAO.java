@@ -9,32 +9,24 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.servlet.http.HttpSession;
-import org.apache.log4j.Logger;
 
 /**
  * General class to work with DataBase
+ *
  * @author ktw757057
  */
 abstract class AbstractDAO {
 
-    protected final Logger log = Logger.getLogger(this.getClass());
-    private String myDriver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    private String server = mon.MainMon.getMainServerName();
-    private String dataBase = mon.MainMon.getMainDatabaseName();
+    private String myDriver = "com.mysql.cj.jdbc.Driver";
+    private String server = "localhost";
+    private String dataBase = "testdb";
     private String myUrlDriver;
-    private String user;
-    private String password;
+    private String user = "root";
+    private String password = "vova060659";
     private Connection connection;
 
-    protected AbstractDAO(HttpSession session) {
-        user = (String) session.getAttribute("j_username");
-        password = (String) session.getAttribute("j_password");
+    protected AbstractDAO() {
         createUrlDriver(server, dataBase);
-    }
-
-    public Logger getLog() {
-        return log;
     }
 
     public String getDataBase() {
@@ -48,13 +40,10 @@ abstract class AbstractDAO {
     public String getPassword() {
         return password;
     }
-    
-    
 
     private void createUrlDriver(String server, String dB) {
-        myUrlDriver = "jdbc:sqlserver://" + server + ";database=" + dB;
+        myUrlDriver = "jdbc:mysql://" + server + "/" + dataBase + "?serverTimezone=UTC";
         System.out.println("driver=" + myUrlDriver);
-        //private String myUrl = "jdbc:sqlserver://o757;database=TDB1";
     }
 
     private Connection getConnection() {
@@ -62,7 +51,7 @@ abstract class AbstractDAO {
             Class.forName(myDriver);
             connection = DriverManager.getConnection(myUrlDriver, user, password);
         } catch (Exception e) {
-            log.info("error--" + e);
+            System.out.println("error--" + e);
         }
         return connection;
     }
