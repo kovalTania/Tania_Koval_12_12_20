@@ -31,9 +31,9 @@ public class Task {
 
     public void sortedFoldersToCopyOrCode() {
         List<String> listOfTifElements = new ArrayList<>();
-        //получаем все едементы с расширением TIF
+        //получаем все элементы с расширением TIF
         listOfTifElements = list.parallelStream().filter(a -> a.contains(TIF)).map(a -> a.substring(0, a.lastIndexOf(SEPERATOR))).distinct().collect(Collectors.toList());
-        //удаляем из общего списка все файли с TIF
+        //удаляем из общего списка все файлы с TIF
         list.removeIf(a -> a.contains(TIF));
         //работаем со списком фалов TIF
         if (!listOfTifElements.isEmpty()) {
@@ -42,15 +42,15 @@ public class Task {
                 String[] elementsOfFolder = s.split(SEPERATOR);
                 //список глубины поиска и кодирования других папок
                 int maxDeep = elementsOfFolder.length;
-                //по корням папок проверяем файли и при необходимости добавляем в результат
+                //по корням папок проверяем файлы и при необходимости добавляем в результат
                 findFoldersByTifCopy(elementsOfFolder, maxDeep);
-                //обработываем оставшиеся файли
+                //обрабатываем оставшиеся файлы
                 List<String> copyOfGeneralList = new ArrayList<>(list.parallelStream().filter(a -> a.split(SEPERATOR).length <= maxDeep + 1).collect(Collectors.toList()));
                 addFilesToResultByFileType(copyOfGeneralList.parallelStream().filter(a -> a.contains(".")).collect(Collectors.toList()));
             }
 
         } else {
-            //проверка можно ли записать файли не по елементно а сразу папку если все ее фали соответствуют определенным типам
+            //проверка можно ли записать файлы не поэлементно, а сразу папку если все ее файлы соответствуют определенным типам
             comparatorByLengthOfEl(list);
             //получаем список всех корней папок
             List<String> copyList = list.parallelStream().filter(a -> !a.contains(".")).collect(Collectors.toList());
@@ -58,11 +58,11 @@ public class Task {
                 if (folder == null) {
                     continue;
                 }
-                //получае все файли в данном корне
+                //получаем все файлы в данном корне
                 List<String> allFilesInFolder = list.parallelStream().filter(a -> a.contains(folder)).filter(a -> a.contains(".")).collect(Collectors.toList());
                 parseFolderToAddInResult(allFilesInFolder, folder, copyList);
             }
-            //обработываем оставшиеся файли
+            //обрабатываем оставшиеся файлы
             List<String> copyOfGeneralList = new ArrayList<>(list);
             addFilesToResultByFileType(copyOfGeneralList.parallelStream().filter(a -> a.contains(".")).collect(Collectors.toList()));
         }
@@ -106,8 +106,8 @@ public class Task {
         for (String folder : elementsOfFolder) {
             //список файлов записанных по данному пути
             List<String> folderContainsFile = list.parallelStream().filter(a -> a.contains(folder + SEPERATOR) && a.contains(".")).filter(a -> a.split(SEPERATOR).length <= maxDeep + 1).collect(Collectors.toList());
-            //получаем только пути папок для проверки если все файли в них с расширением подходящим для кодирования 
-            //записиваем только путь к папке
+            //получаем только пути папок для проверки если все файлы в них с расширением, подходящим для кодирования 
+            //записываем только путь к папке
             List<String> folders = folderContainsFile.parallelStream().map(a -> a.substring(0, a.lastIndexOf(SEPERATOR))).distinct().collect(Collectors.toList());
             //проверка на корень выше
             for (String theFolder : folders) {
@@ -121,7 +121,7 @@ public class Task {
                     }
                 }
             }
-            //цыкл по папкам 
+            //цикл по папкам 
             parsePathToFoldersAndAddOnlyPathToFolderTif(folders, folderContainsFile);
         }
     }
@@ -133,7 +133,7 @@ public class Task {
             if (folder == null) {
                 continue;
             }
-            //получае все файли в данном корне
+            //получаем все файлы в данном корне
             List<String> allFilesInFolder = folderContainsFile.parallelStream().filter(a -> a.contains(folder)).collect(Collectors.toList());
             parseFolderToAddInResult(allFilesInFolder, folder, copyFolders);
         }
@@ -146,16 +146,16 @@ public class Task {
         if (!allFilesInFolder.isEmpty()) {
             List<String> copyAllFilesInFolder = new ArrayList<>(allFilesInFolder);
             for (String file : allFilesInFolder) {
-                //если не подлежт кодированию 
-                //удалем елемент из списка
+                //если не подлежит кодированию 
+                //удаляем элемент из списка
                 if (!file.contains(MOV) && !file.contains(AVI)) {
                     copyAllFilesInFolder.remove(file);
                 }
             }
             //после проверки типов файла
-            //запоминаем количесвто файлов подлежащих содированию после обработки
+            //запоминаем количество файлов подлежащих кодированию после обработки
             int qntFileNotToCode = copyAllFilesInFolder.size();
-            //если ни один елемент не удалили 
+            //если ни один элемент не удалили 
             //корень подходит под кодирование
             if (qntOfAllFiles == qntFileNotToCode) {
                 listToCode.add(folder);
@@ -173,7 +173,7 @@ public class Task {
     }
 
     private void TIFFoldersToResult(String s) {
-        //запиываем в список на кодирование
+        //записываем в список на кодирование
         listToCode.add(s);
         list.removeIf(a -> a.equals(s));
     }
@@ -195,7 +195,7 @@ public class Task {
         }
     }
 
-    //сортировка по длине елементов
+    //сортировка по длине элементов
     private void comparatorByLengthOfEl(List<String> listOfEl) {
         Collections.sort(listOfEl, (String o1, String o2) -> {
             if (o1.length() > o2.length()) {
